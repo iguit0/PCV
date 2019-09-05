@@ -3,10 +3,11 @@
 #include <string>
 #include <vector>
 #include <math.h>
+#include <algorithm>
 
 using namespace std;
 
-class PCV{
+class PCV {
     public:
     
     ifstream f; // objeto p/ leitura de arquivos
@@ -19,4 +20,9 @@ class PCV{
 
     vector< vector<double> > matriz_dist; // matriz de distâncias
     
+    vector<int> geraSolAleatorio(); // gera solução aleatória
+
+    void imprimeSolucao(vector<int> &solucaoAleatoria); // imprime solução aleatória
+
+    double funcaoObjetivo(vector<int> &solucaoAleatoria);  // função de avaliação (fitness)
 };
