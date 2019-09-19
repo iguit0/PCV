@@ -60,6 +60,102 @@ vector<int> PCV::geraSolAleatorio() {
     return solucao;
 }
 
+int PCV::retornaMenorDistancia(int cidadeAtual, vector<int> &listaCandidatos) {
+    int menorPosicao = 0; // Armazena a posição que possui a menor distância
+    double menorDistancia = matriz_dist[cidadeAtual][listaCandidatos[0]]; // Armazena a menor distância
+
+    for(int i=1;i<int(listaCandidatos.size());i++) {
+        if (matriz_dist[cidadeAtual][listaCandidatos[i]] < menorDistancia) {
+            menorDistancia = matriz_dist[cidadeAtual][listaCandidatos[i]];
+            menorPosicao = i;
+        }
+    }
+
+    return menorPosicao;
+}
+
+vector<int> PCV::geraSolVizProx() {
+    vector<int> solucoes;
+    int cidadeAtual = 0;
+
+    // Lista de cidades candidatas
+    vector<int> listaCandidatos;
+    for(int i=1;i<N;i++) {
+        listaCandidatos.push_back(i);
+    }
+    // enquanto não visitar todas as cidades, incluir mais cidades na solução
+    while(!listaCandidatos.empty()) {
+        int posicao = retornaMenorDistancia(cidadeAtual, listaCandidatos); // calcula a cidade mais proxima da cidade atual
+
+        // incluir na solucao a cidade mais próxima
+        solucoes.push_back(listaCandidatos[posicao]);
+
+        // Atualizar Cidade Atual
+        cidadeAtual = listaCandidatos[posicao];
+
+        // Remover a cidade
+        listaCandidatos.erase(listaCandidatos.begin() + posicao);
+    }
+
+    return solucoes;
+}
+
+pair<int,int> PCV::retornaMenorInst(vector<int> &listaCandidatos, vector<int> &solucoes) {
+    int menorPosicaoLC = 0, menorPosicaoSolucao = 0;
+    double menorDistancia = 999999999;
+
+    for(int i=0;i<int(listaCandidatos.size());i++) {
+        if(matriz_dist[0][listaCandidatos[i]] + matriz_dist[listaCandidatos[i][solucoes[0]]] - matriz_dist[0][solucoes[0]] < menorDistancia) {
+            menorDistancia = matriz_dist[0][listaCandidatos[i]] + matriz_dist[listaCandidatos[i][solucoes[0]]] - matriz_dist[0][solucoes[0]];
+            menorPosicaoLC = i;
+            menorPosicaoSolucao = 0;
+        }
+    }
+
+    for(int j=1;j<int(solucoes.size());j++) {
+        if(matriz_dist[solucoes[j]][listaCandidatos[i]] + matriz_dist[listaCandidatos[i][solucoes[j+1]]] - matriz_dist[solucoes[j]][solucoes[j+1]]
+        < menorDistancia) {
+            menorDistancia = matriz_dist[solucoes[j]][listaCandidatos[i]] + matriz_dist[listaCandidatos[i][solucoes[j+1]]] - matriz_dist[solucoes[j]][solucoes[j+1]];
+            menorPosicaoLC = i;
+            menorPosicaoSolucao = j;
+        }
+    }
+
+    if(matriz_dist[solucoes[solucoes.size()-1]][listaCandidatos[i]] + matriz_dist[listaCandidatos[i][0]]
+        - matriz_dist[solucoes[solucoes.size()-1]][0] < menorDistancia) {
+            menorDistancia = matriz_dist[solucoes[solucoes.size()=1]][listaCandidatos[i]] + matriz_dist[listaCandidatos[i][0]] - matriz_dist[solucoes[solucoes.size()=1]][0];
+            menorPosicaoLC = i;
+            menorPosicaoSolucao = solucoes.size()-1;
+        }
+
+    return pair<int,int>(menorPosicaoSolucao, menorPosicaoLC);
+}
+
+vector<int> PCV::geraSolInsMaisBar() {
+    vector<int> solucoes;
+
+    // Lista de cidades candidatas
+    vector<int> listaCandidatos;
+    for(int i=1;i<N;i++) {
+        listaCandidatos.push_back(i);
+    }
+
+    for(int i=0;i<2;i++) {
+        int r = rand() % (listaCandidatos.size()-1);
+        solucoes.push_back(listaCandidatos[r]);
+        listaCandidatos.erase(listaCandidatos.begin() + r);
+    }
+
+    // enquanto não visitar todas as cidades, incluir mais cidades
+    while(!listaCandidatos.empty()) {
+        pair<int,int> pos = retornaMenorInst(listaCandidatos, solucoes); // retornar as posicoes na solucao e da lista de candidatos com a menor insercao
+        solucoes.insert(solucoes.begin() + pos.first, listaCandidatos[pos.second]); // inserir na solucao a cidade com menor custo de insercao
+        listaCandidatos.erase(listaCandidatos.begin() + pos.second);
+    }
+
+    return solucoes;
+}
+
 void PCV::imprimeSolucao(vector<int> &solucaoAleatoria) {
     cout << "Solucao gerada aleatoriamente: ";
     cout << "[ ";

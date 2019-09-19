@@ -16,5 +16,17 @@ int main() {
     pcv.imprimeSolucao(solucaoAleatoria);
     cout << "Funcao Objetivo: " << pcv.funcaoObjetivo(solucaoAleatoria) << endl;
 
+
+    vector<int> solVizProx = pcv.geraSolVizProx();
+    cout << "Solucao gerada por vizinho mais proximo" << endl;
+    pcv.imprimeSolucao(solVizProx);
+    cout << "Solucao vizinho + prox: " << pcv.funcaoObjetivo(solVizProx) << endl;
+
+    vector<int> solInsMaisBar = pcv.geraSolInsMaisBar();
+    cout << "Solucao gerada pela insercao mais barata" << endl;
+    pcv.imprimeSolucao(solInsMaisBar);
+    cout << "Funcao Objetivo Insercao mais barata" << pcv.funcaoObjetivo(solInsMaisBar) << endl;
+
+
     return 1;
 }
