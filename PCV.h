@@ -7,9 +7,9 @@
 
 using namespace std;
 
-class PCV {
+class PCV
+{
 public:
-
 	//objeto para leitura de arquivo
 	ifstream f;
 
@@ -24,47 +24,32 @@ public:
 	int N;
 
 	//Matriz de distancias
-	vector< vector<double> > matriz_dist;
+	vector<vector<double>> matriz_dist;
 
 	//Imprimir solucao
 	void imprimeSol(vector<int> &sol);
-	
+
 	//Funcao de avaliacao
 	double fo(vector<int> &sol);
-	
+
 	//Gera solucao aleatoria
 	vector<int> geraSolAleatoria();
 
 	//Gera solucao pelo Vizinho Mais Proximo
 	vector<int> geraSolVizProx();
-	
+
 	//Retorna a posicao da cidade mais proxima na LC
-	int retornaMenorDist(int cidadeAtual, vector<int>& LC);
+	int retornaMenorDist(int cidadeAtual, vector<int> &LC);
 
 	//Gera solucao pela Insercao Mais Barata
 	vector<int> geraSolInsMaisBar();
-	
+
 	//Retorna a posicao da cidade com a insercao mais barata na LC
-	pair<int,int> retornaMenorIns(vector<int>& LC, vector<int>& sol);
+	pair<int, int> retornaMenorIns(vector<int> &LC, vector<int> &sol);
 
+	//Metodo de descida completa com movimento de troca
+	void descidaCompletaTroca(vector<int> &solCorrente, double &melhorFo);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	//Metodo de descida primeiro de melhora com movimento de troca
+	void descidaPrimeiraTroca(vector<int> &solCorrente, double &melhorFo);
 };

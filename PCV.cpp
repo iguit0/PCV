@@ -1,24 +1,22 @@
 #include "PCV.h"
 
-PCV::PCV(string nomeArq): nomeArq(nomeArq)
+PCV::PCV(string nomeArq) : nomeArq(nomeArq)
 {
-	
+
 	//abrir o arquivo
 	f = ifstream(nomeArq);
 
 	//verificar se o arquivo foi aberto
-	if(!f.is_open())
+	if (!f.is_open())
 		cout << "Erro ao abrir o arquivo " << nomeArq << "!" << endl;
 
 	//ler numero de cidades
 	f >> N;
 
-	
 	//coordenadas das cidades, tratadas como pares (x,y)
-	vector< pair<double, double> > pontos(N);
+	vector<pair<double, double>> pontos(N);
 
-
-	for(int i = 0; i < N; i++)
+	for (int i = 0; i < N; i++)
 	{
 
 		double x, y;
@@ -33,61 +31,45 @@ PCV::PCV(string nomeArq): nomeArq(nomeArq)
 		f >> y;
 
 		//incluir no vetor de pontos
-		pontos[i] = pair<double, double>(x,y);
-
+		pontos[i] = pair<double, double>(x, y);
 	}
 
 	cout << N << " cidades: " << endl;
 	//imprimir os pontos lidos
-	for(int i = 0; i < N; i++)
+	for (int i = 0; i < N; i++)
 	{
 		printf("%d - (%f, %f)\n", i, pontos[i].first, pontos[i].second);
 	}
 
-	
 	//criar a matriz de distancias
-	matriz_dist = vector< vector<double> >(N, vector<double>(N));
+	matriz_dist = vector<vector<double>>(N, vector<double>(N));
 
-	
 	//instanciar a matriz de distancias
-	for(int i = 0; i < N; i++)
+	for (int i = 0; i < N; i++)
 	{
 
-		for(int j = 0; j < N; j++)
+		for (int j = 0; j < N; j++)
 		{
-			pair<double, double> pi = pontos[i];		
+			pair<double, double> pi = pontos[i];
 			pair<double, double> pj = pontos[j];
 
-			
-			matriz_dist[i][j] = sqrt( pow(pi.first - pj.first, 2) + pow(pi.second - pj.second, 2) );
-
+			matriz_dist[i][j] = sqrt(pow(pi.first - pj.first, 2) + pow(pi.second - pj.second, 2));
 		}
-
 	}
 
-	cout << endl << "Matriz de distancias: " << endl;
+	cout << endl
+		 << "Matriz de distancias: " << endl;
 
 	//imprimir a matriz
-	for(int i = 0; i < N; i++)
+	for (int i = 0; i < N; i++)
 	{
-		for(int j = 0; j < N; j++)
+		for (int j = 0; j < N; j++)
 		{
 			printf("%f\t", matriz_dist[i][j]);
-		}		
+		}
 
 		cout << endl;
 	}
-
-
-
-
-
-
-
-
-
-
-
 }
 
 PCV::~PCV()
@@ -95,19 +77,17 @@ PCV::~PCV()
 	f.close();
 }
 
-
 vector<int> PCV::geraSolAleatoria()
 {
 	vector<int> sol;
 
-	for(int i = 1; i < N; i++)
+	for (int i = 1; i < N; i++)
 		sol.push_back(i);
 
 	random_shuffle(sol.begin(), sol.end());
 
 	return sol;
 }
-
 
 vector<int> PCV::geraSolVizProx()
 {
@@ -117,42 +97,41 @@ vector<int> PCV::geraSolVizProx()
 
 	//Lista de cidades candidatas
 	vector<int> LC;
-	
-	for(int i = 1; i < N; i++)
+
+	for (int i = 1; i < N; i++)
 		LC.push_back(i);
 
-
 	//enquanto nao visitar todas as cidades, incluir mais cidades na solucao
-	while(!LC.empty())
+	while (!LC.empty())
 	{
 		//Calcular a cidade mais proxima da cidade atual
 		int pos = retornaMenorDist(cidadeAtual, LC);
-	
+
 		//Incluir na solucao a cidade mais proxima
-		sol.push_back(LC[pos]);		
-	
+		sol.push_back(LC[pos]);
+
 		//Atualizar a cidade atual
 		cidadeAtual = LC[pos];
 
 		//Remover a cidade incluida da lista de candidatos
 		LC.erase(LC.begin() + pos);
 	}
-	
+
 	return sol;
 }
 
-int PCV::retornaMenorDist(int cidadeAtual, vector<int>& LC)
+int PCV::retornaMenorDist(int cidadeAtual, vector<int> &LC)
 {
 	//Armazena a posicao que possui a menor distancia
 	int menorPos = 0;
-	
+
 	//Armazena a menor distancia
 	double menorDist = matriz_dist[cidadeAtual][LC[0]];
 
 	//Busca pela cidade que possui a menor distancia
-	for(int i = 1; i < int(LC.size()); i++)
+	for (int i = 1; i < int(LC.size()); i++)
 	{
-		if(matriz_dist[cidadeAtual][LC[i]] < menorDist)
+		if (matriz_dist[cidadeAtual][LC[i]] < menorDist)
 		{
 			menorDist = matriz_dist[cidadeAtual][LC[i]];
 			menorPos = i;
@@ -162,21 +141,20 @@ int PCV::retornaMenorDist(int cidadeAtual, vector<int>& LC)
 	return menorPos;
 }
 
-
 vector<int> PCV::geraSolInsMaisBar()
 {
-	vector<int> sol;	
-	
+	vector<int> sol;
+
 	//lista de candidatos
 	vector<int> LC;
 
-	for(int i = 1; i < N; i++)
+	for (int i = 1; i < N; i++)
 		LC.push_back(i);
-	
+
 	//Incluir duas cidades aleatoriamente na solucao
-	for(int i = 0; i < 2; i++)
+	for (int i = 0; i < 2; i++)
 	{
-		int r = rand() % (LC.size()-1);
+		int r = rand() % (LC.size() - 1);
 
 		sol.push_back(LC[r]);
 
@@ -184,14 +162,14 @@ vector<int> PCV::geraSolInsMaisBar()
 	}
 
 	//enquanto nao visitar todas as cidades, incluir mais cidades
-	while(!LC.empty())
+	while (!LC.empty())
 	{
 		//retornar as posicoes na solucao e da LC com a menor insercao
-		pair<int,int> pos = retornaMenorIns(LC,sol);
-		
+		pair<int, int> pos = retornaMenorIns(LC, sol);
+
 		//Inserir na solucao a cidade com a menor custo de insercao
 		sol.insert(sol.begin() + pos.first, LC[pos.second]);
-		
+
 		//Remover a cidade da lista de candidatos
 		LC.erase(LC.begin() + pos.second);
 	}
@@ -199,46 +177,46 @@ vector<int> PCV::geraSolInsMaisBar()
 	return sol;
 }
 
-pair<int,int> PCV::retornaMenorIns(vector<int>& LC, vector<int>& sol)
+pair<int, int> PCV::retornaMenorIns(vector<int> &LC, vector<int> &sol)
 {
 	int menorPosLC = 0, menorPosSol = 0;
-	
+
 	double menorDist = 999999;
 
-	for(int i = 0; i < int(LC.size()); i++)
+	for (int i = 0; i < int(LC.size()); i++)
 	{
-		if(matriz_dist[0][LC[i]] + matriz_dist[LC[i]][sol[0]] - matriz_dist[0][sol[0]] < menorDist)
+		if (matriz_dist[0][LC[i]] + matriz_dist[LC[i]][sol[0]] - matriz_dist[0][sol[0]] < menorDist)
 		{
 			menorDist = matriz_dist[0][LC[i]] + matriz_dist[LC[i]][sol[0]] - matriz_dist[0][sol[0]];
 			menorPosLC = i;
 			menorPosSol = 0;
 		}
 
-		for(int j = 1; j < int(sol.size()); j++)
+		for (int j = 1; j < int(sol.size()); j++)
 		{
-			if(matriz_dist[sol[j]][LC[i]] + matriz_dist[LC[i]][sol[j+1]] - matriz_dist[sol[j]][sol[j+1]] < menorDist)
+			if (matriz_dist[sol[j]][LC[i]] + matriz_dist[LC[i]][sol[j + 1]] - matriz_dist[sol[j]][sol[j + 1]] < menorDist)
 			{
-				menorDist = matriz_dist[sol[j]][LC[i]] + matriz_dist[LC[i]][sol[j+1]] - matriz_dist[sol[j]][sol[j+1]];
+				menorDist = matriz_dist[sol[j]][LC[i]] + matriz_dist[LC[i]][sol[j + 1]] - matriz_dist[sol[j]][sol[j + 1]];
 				menorPosLC = i;
 				menorPosSol = j;
 			}
 		}
 
-		if(matriz_dist[sol[sol.size()-1]][LC[i]] + matriz_dist[LC[i]][0] - matriz_dist[sol[sol.size()-1]][0] < menorDist)
+		if (matriz_dist[sol[sol.size() - 1]][LC[i]] + matriz_dist[LC[i]][0] - matriz_dist[sol[sol.size() - 1]][0] < menorDist)
 		{
-			menorDist = matriz_dist[sol[sol.size()-1]][LC[i]] + matriz_dist[LC[i]][0] - matriz_dist[sol[sol.size()-1]][0];
+			menorDist = matriz_dist[sol[sol.size() - 1]][LC[i]] + matriz_dist[LC[i]][0] - matriz_dist[sol[sol.size() - 1]][0];
 			menorPosLC = i;
-			menorPosSol = sol.size()-1;
+			menorPosSol = sol.size() - 1;
 		}
 	}
 
-	return pair<int,int>(menorPosSol, menorPosLC);
+	return pair<int, int>(menorPosSol, menorPosLC);
 }
 
 void PCV::imprimeSol(vector<int> &sol)
 {
 	cout << "[ ";
-	for(int i = 0; i < sol.size(); i++)
+	for (int i = 0; i < sol.size(); i++)
 		cout << sol[i] << ", ";
 	cout << "]" << endl;
 }
@@ -246,33 +224,115 @@ void PCV::imprimeSol(vector<int> &sol)
 double PCV::fo(vector<int> &sol)
 {
 	double soma = 0;
-	
+
 	//Somar a distancia da cidade inicial ate a primeira cidade da solucao
 	soma = matriz_dist[0][sol[0]];
-	
+
 	//Somar as distancias das cidades na solucao
-	for(int i = 0; i < int(sol.size()-1); i++)
-		soma += matriz_dist[sol[i]][sol[i+1]];
-	
+	for (int i = 0; i < int(sol.size() - 1); i++)
+		soma += matriz_dist[sol[i]][sol[i + 1]];
+
 	//Somar a distancia da ultima cidade na solucao ate a cidade 0
-	soma += matriz_dist[sol[sol.size()-1]][0];
+	soma += matriz_dist[sol[sol.size() - 1]][0];
 
 	return soma;
 }
 
+void PCV::descidaCompletaTroca(vector<int> &solCorrente, double &melhorFo)
+{
+	int posI, posJ = 0;
 
+	bool melhorou = false;
 
+	do
+	{
+		melhorou = false;
 
+		for (int i = 0; i < solCorrente.size() - 1; i++)
+		{
+			for (int j = i + 1; j < solCorrente.size(); j++)
+			{
+				/*cout << "Troca " << solCorrente[i] << " com " << solCorrente[j] << endl;*/
+				// aplicar troca
+				int aux = solCorrente[i];
+				solCorrente[i] = solCorrente[j];
+				solCorrente[j] = aux;
 
+				// avaliar a nova solução
+				double foSolCorrente = fo(solCorrente);
 
+				// verificar se melhorou e armazenar a melhor troca
+				if (foSolCorrente < melhorFo)
+				{
+					melhorFo = foSolCorrente;
+					posI = i;
+					posJ = j;
+					melhorou = true;
+				}
 
+				// desfaz troca
+				aux = solCorrente[i];
+				solCorrente[i] = solCorrente[j];
+				solCorrente[j] = aux;
+			}
+		}
 
+		if (melhorou)
+		{
+			int aux = solCorrente[posI];
+			solCorrente[posI] = solCorrente[posJ];
+			solCorrente[posJ] = aux;
 
+			/*cout << "Melhor Troca " << solCorrente[posI] << " com " << solCorrente[posJ] << endl;*/
+			imprimeSol(solCorrente);
+		}
 
+	} while (melhorou);
+}
 
+void PCV::descidaPrimeiraTroca(vector<int> &solCorrente, double &melhorFo)
+{
+	int posI, posJ = 0;
 
+	bool melhorou = false;
 
+	do
+	{
+		melhorou = false;
 
+		for (int i = 0; i < solCorrente.size() - 1; i++)
+		{
+			for (int j = i + 1; j < solCorrente.size(); j++)
+			{
+				cout << "Troca " << solCorrente[i] << " com " << solCorrente[j] << endl;
+				// aplicar troca
+				int aux = solCorrente[i];
+				solCorrente[i] = solCorrente[j];
+				solCorrente[j] = aux;
 
+				// avaliar a nova solução
+				double foSolCorrente = fo(solCorrente);
 
+				// verificar se melhorou e armazenar a melhor troca
+				if (foSolCorrente < melhorFo)
+				{
+					cout << "Melhorou: " << foSolCorrente << endl;
+					imprimeSol(solCorrente);
+					melhorFo = foSolCorrente;
+					melhorou = true;
+					break;
+				}
+				else
+				{
+					// desfaz troca
+					aux = solCorrente[i];
+					solCorrente[i] = solCorrente[j];
+					solCorrente[j] = aux;
+				}
+			}
+			if (melhorou)
+				break;
+		}
 
+	} while (melhorou);
+}
