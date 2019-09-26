@@ -7,25 +7,47 @@
 
 using namespace std;
 
-int main() {
-    srand(time(NULL));
-    //srand(1);
-    PCV pcv("instancia.txt");
-    vector<int> solucaoAleatoria;
-    solucaoAleatoria = pcv.geraSolAleatorio();
-    pcv.imprimeSolucao(solucaoAleatoria);
-    cout << "Funcao Objetivo: " << pcv.funcaoObjetivo(solucaoAleatoria) << endl;
+int main()
+{
+	//srand(time(NULL));
+	srand(1);
 
-    vector<int> solVizProx = pcv.geraSolVizProx();
-    cout << "Solucao gerada por vizinho mais proximo" << endl;
-    pcv.imprimeSolucao(solVizProx);
-    cout << "Solucao vizinho + prox: " << pcv.funcaoObjetivo(solVizProx) << endl;
+	PCV p("A5.txt");	
+	
+	vector<int> solAleatoria;
 
-    vector<int> solInsMaisBar = pcv.geraSolInsMaisBar();
-    cout << "Solucao gerada pela insercao mais barata" << endl;
-    pcv.imprimeSolucao(solInsMaisBar);
-    cout << "Funcao Objetivo Insercao mais barata" << pcv.funcaoObjetivo(solInsMaisBar) << endl;
+	solAleatoria = p.geraSolAleatoria();
+
+	cout << "Solucao gerada Aleatoriamente: ";
+	
+	p.imprimeSol(solAleatoria);
+
+	cout << "Fo: " << p.fo(solAleatoria) << endl;
+
+	vector<int> solVizProx;
+
+	solVizProx = p.geraSolVizProx();
+
+	cout << "Solucao gerada pelo Vizinho Mais Proximo: ";
+	
+	p.imprimeSol(solVizProx);
+
+	cout << "Fo: " << p.fo(solVizProx) << endl;
+	
+	vector<int> solInsMaisBar;
+
+	solInsMaisBar = p.geraSolInsMaisBar();
+
+	cout << "Solucao gerada pela Insercao Mais Barata: ";
+	
+	p.imprimeSol(solInsMaisBar);
+
+	cout << "Fo: " << p.fo(solInsMaisBar) << endl;
 
 
-    return 1;
+
+
+
+
+	return 1;
 }

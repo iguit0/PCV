@@ -1,6 +1,6 @@
 #include <fstream>
-#include <iostream>
 #include <string>
+#include <iostream>
 #include <vector>
 #include <math.h>
 #include <algorithm>
@@ -8,29 +8,63 @@
 using namespace std;
 
 class PCV {
-    public:
-    
-    ifstream f; // objeto p/ leitura de arquivos
-    string nomeArq; // nome do arquivo
+public:
 
-    PCV(string nomeArq); // construtor e destrutor
-    virtual ~PCV();
+	//objeto para leitura de arquivo
+	ifstream f;
 
-    int N; // numero das cidades
+	//nome do arquivo
+	string nomeArq;
 
-    vector< vector<double> > matriz_dist; // matriz de distâncias
-    
-    vector<int> geraSolAleatorio(); // gera solução aleatória
+	//construtor e destrutor
+	PCV(string nomeArq);
+	virtual ~PCV();
 
-    void imprimeSolucao(vector<int> &solucaoAleatoria); // imprime solução aleatória
+	//Numero de cidades
+	int N;
 
-    double funcaoObjetivo(vector<int> &solucaoAleatoria);  // função de avaliação (fitness)
+	//Matriz de distancias
+	vector< vector<double> > matriz_dist;
 
-    vector<int> geraSolVizProx(); // gera solução pelo vizinho mais próximo
+	//Imprimir solucao
+	void imprimeSol(vector<int> &sol);
+	
+	//Funcao de avaliacao
+	double fo(vector<int> &sol);
+	
+	//Gera solucao aleatoria
+	vector<int> geraSolAleatoria();
 
-    int retornaMenorDistancia(int cidadeAtual, vector<int> &listaCandidatos); // retorna a posição da cidade mais próxima na lista de candidatos
+	//Gera solucao pelo Vizinho Mais Proximo
+	vector<int> geraSolVizProx();
+	
+	//Retorna a posicao da cidade mais proxima na LC
+	int retornaMenorDist(int cidadeAtual, vector<int>& LC);
 
-    vector<int> geraSolInsMaisBar(); // gera solução pela inserção mais barata
+	//Gera solucao pela Insercao Mais Barata
+	vector<int> geraSolInsMaisBar();
+	
+	//Retorna a posicao da cidade com a insercao mais barata na LC
+	pair<int,int> retornaMenorIns(vector<int>& LC, vector<int>& sol);
 
-    pair<int,int> retornaMenorIns(vector<int> &listaCandidatos, vector<int> &solucoes); // retorna a posicao da cidade com a inserção mais barata na lista de candidatos
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 };
